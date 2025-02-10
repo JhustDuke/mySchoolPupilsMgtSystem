@@ -1,0 +1,21 @@
+{
+	"name": "amendivine",
+	"version": "1.0.0",
+	"description": "",
+	"source": "index.html",
+	"types": "dist/types.d.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "parcel --lazy",
+		"build": "parcel build"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"materializecss-colors-alone": "^0.1.0"
+	},
+	"devDependencies": {
+		"parcel": "^2.13.3"
+	}
+}
