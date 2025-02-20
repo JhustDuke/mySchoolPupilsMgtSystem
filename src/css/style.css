@@ -1,0 +1,9 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css");
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+
+@import url("../../node_modules/materializecss-colors-alone/colors.css");
+
+.hover:hover {
+	background-color: rgb(204, 146, 146);
+	color: beige !important;
+}
