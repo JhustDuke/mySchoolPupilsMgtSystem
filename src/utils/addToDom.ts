@@ -1,21 +1,21 @@
 export function addElemToDom({
 	parentElem,
 	typeOfElem,
-	textContent,
+	textContent = "placeholder",
 	elemAttributes = {},
 }: {
-	parentElem: any;
+	parentElem: HTMLElement | null;
 	typeOfElem: string;
 	textContent?: any;
 	elemAttributes?: { [key: string]: any };
 }): void {
-	const getParent = document.querySelector(parentElem);
-	const createdElem = document.createElement(typeOfElem);
-
-	if (!getParent) {
-		console.log(`Parent element '${parentElem}' not found.`);
+	if (!(parentElem instanceof HTMLElement)) {
+		console.log(`${parentElem} is not a valid html element`);
 		return;
 	}
+
+	const createdElem = document.createElement(typeOfElem);
+
 	// Apply attributes
 	for (const [key, value] of Object.entries(elemAttributes)) {
 		createdElem.setAttribute(key, value);
@@ -23,6 +23,6 @@ export function addElemToDom({
 	if (textContent) {
 		createdElem.textContent = textContent;
 	}
-	getParent.appendChild(createdElem);
+	parentElem.appendChild(createdElem);
 	console.log(`Element <${typeOfElem}> created and added to ${parentElem}`);
 }

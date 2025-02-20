@@ -1,5 +1,5 @@
-export const dom = {
-	selectElem: document.querySelector<HTMLSelectElement>("select"),
+export const domRefs = {
+	selectElem: document.querySelector<HTMLSelectElement>("#select"),
 	sessionModal: document.querySelector<HTMLDivElement>("#addSessionModal"),
 	sessionModalInput:
 		document.querySelector<HTMLInputElement>("#sessionModalInput"),
