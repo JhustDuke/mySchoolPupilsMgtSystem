@@ -6,6 +6,7 @@
 		"lib": ["ES2020", "DOM", "DOM.Iterable"],
 		"skipLibCheck": true,
 		"incremental": true,
+		"declaration": true,
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
@@ -13,6 +14,7 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
+
 		"typeRoots": ["./node_modules/types"],
 
 		/* Linting */

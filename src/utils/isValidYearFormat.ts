@@ -1,9 +1,4 @@
-export function isValidYearFormat(sessionModalInput: any): boolean {
+export function isValidYearFormat(inputValue: string): boolean {
 	const sessionInputFormat = /^(\d{4})\/(\d{4})$/;
-	const inputValue = sessionModalInput?.value.trim() || "";
-	const validate = sessionInputFormat.test(inputValue);
-	if (!validate) {
-		return false;
-	}
-	return true;
+	return sessionInputFormat.test(inputValue.trim());
 }
