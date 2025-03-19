@@ -118,6 +118,13 @@ export const sessionModalMethods = function (
 				parentElem,
 				typeOfElem: "option",
 				elemAttributes: { value: inputValue },
+				pluginFunc: function (parent: any, newElem: any) {
+					//insert elements before the addSession option
+					const addSessionOption = parent.querySelector("#addSession");
+					if (addSessionOption) {
+						parent.insertBefore(newElem, addSessionOption);
+					}
+				},
 			});
 			clearModalInputs();
 			hideModal();
