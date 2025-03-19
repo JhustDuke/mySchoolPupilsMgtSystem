@@ -1,95 +1,138 @@
-// views/sessionModalFactory.ts
-import { isValidYearFormat, addElemToDom as addToSelectOption } from "../utils";
-import { domRefs } from ".";
-import { sessionModel } from "../model";
+import {
+	isValidYearFormat,
+	addElemToDom as addToSelectOption,
+	domUtils as modalUtils,
+} from "../utils";
+import { domRefs as domElements } from ".";
+import { sessionModel as ssModel } from "../model";
 
-export const sessionModalMethods = (function () {
-	// defaults
-	domRefs.sessionModal!.style.display = "none";
-	domRefs.modalSubmitBtn!.disabled = true;
-	sessionModel.loadSessions();
+interface SessionValidationResult {
+	sessionName: string | undefined;
+	isValid: boolean;
+	isDuplicate: boolean;
+}
 
-	const displayModal = function () {
-		if (!domRefs.selectElem) return;
-		const selectedOption =
-			domRefs.selectElem.options[domRefs.selectElem.selectedIndex];
+/** The new options should be added before the addSession option so that it is inserted before */
 
-		if (selectedOption?.value === "addSession") {
-			domRefs.sessionModal!.style.display = "block";
-			console.log("loading modal.....");
-		} else {
-			domRefs.sessionModal!.style.display = "none";
-			console.log(selectedOption, " is not modal activator");
-		}
-	};
-
-	const updateModalUI = function () {
-		const sessionName = domRefs.sessionModalInput?.value.trim();
-		console.log("this is ssnam", sessionName);
-		const isValid = isValidYearFormat(sessionName as string);
-		const btn = domRefs.modalSubmitBtn;
-		const modalHint = domRefs.modalHelp;
-
-		if (!isValid) {
-			modalHint?.classList.add("red", "fw-bold", "fs-5");
-		} else {
-			modalHint?.classList.remove("red", "fw-bold", "fs-5");
-		}
-
-		if (sessionModel?.isDuplicateSession(sessionName as any)) {
-			modalHint!.textContent = "this session year already exist";
-			modalHint?.classList.add("red", "fw-bold", "fs-5");
-			btn!.disabled = true;
+/**
+ * Creates session modal methods with injected dependencies.
+ */
+export const sessionModalMethods = function (
+	domRefs: typeof domElements,
+	sessionModel = ssModel()
+) {
+	const loadDefaults = function (): void {
+		if (!domRefs.sessionModal || !domRefs.modalSubmitBtn || !domRefs.selectElem)
 			return;
-		}
-		btn!.disabled = !isValid;
-		// adds a new option tag to the select
+		domRefs.sessionModal.style.display = "none";
+		domRefs.modalSubmitBtn.disabled = true;
+		sessionModel.loadSessions(domRefs.selectElem);
 	};
 
-	const watchModal = function () {
-		sessionModalMethods.displayModal();
-		sessionModalMethods.updateModalUI();
+	const displayModal = function (): void {
+		if (!domRefs.selectElem || domRefs.selectElem.selectedIndex < 0) return;
+		const selectedOption: HTMLOptionElement | null =
+			domRefs.selectElem.options[domRefs.selectElem.selectedIndex] || null;
+
+		if (!domRefs.sessionModal) return;
+		domRefs.sessionModal.style.display =
+			selectedOption?.value === "addSession" ? "block" : "none";
 	};
-	const closeModalBtn = () => {
-		domRefs.sessionModal!.style.display = "none";
+
+	const validateSessionName = function (): SessionValidationResult {
+		const sessionName: string | undefined =
+			domRefs.sessionModalInput?.value.trim();
+		return {
+			sessionName,
+			isValid: sessionName ? isValidYearFormat(sessionName) : false,
+			isDuplicate: sessionName
+				? sessionModel.isDuplicateSession(sessionName)
+				: false,
+		};
+	};
+
+	const updateModalHint = function (
+		isValid: boolean,
+		isDuplicate: boolean
+	): boolean {
+		const modalHint: HTMLElement | null = domRefs.modalHelp;
+		if (!modalHint) return false;
+
+		modalHint.classList.add("red", "fw-bold", "fs-5");
+
+		if (isDuplicate) {
+			modalHint.textContent = "This session year already exists";
+			return false;
+		}
+
+		if (!isValid) return false;
+
+		modalHint.classList.remove("red", "fw-bold", "fs-5");
+		return true;
+	};
+
+	const updateModalUI = function (): void {
+		const { isValid, isDuplicate } = validateSessionName();
+		if (domRefs.modalSubmitBtn) {
+			domRefs.modalSubmitBtn.disabled = !updateModalHint(isValid, isDuplicate);
+		}
+	};
+
+	const watchModal = function (): void {
+		displayModal();
+		updateModalUI();
+	};
+
+	const hideModal = function (): void {
+		if (!domRefs.sessionModal) return;
+		modalUtils.toggleVisibility({
+			targetElem: domRefs.sessionModal,
+			shouldShow: false,
+		});
 		console.log("modal closed");
 	};
-	const hideModal = function () {
-		domRefs.sessionModal!.style.display = "none";
-	};
-	const clearModalInputs = function () {
-		domRefs.sessionModalInput!.value = "";
-		domRefs.modalHelp?.classList.remove("red", "fw-bold", "fs-5");
-		domRefs.modalSubmitBtn!.disabled = true;
-	};
-	const addNewOptionTag = function () {
-		const textContent = domRefs.sessionModalInput?.value;
-		const parentElem = domRefs.selectElem;
-		const inputValue = domRefs.sessionModalInput?.value;
 
-		if (sessionModel.addSession(inputValue as string)) {
-			console.log("clicked the add btn");
+	const clearModalInputs = function (): void {
+		if (
+			!domRefs.sessionModalInput ||
+			!domRefs.modalHelp ||
+			!domRefs.modalSubmitBtn
+		)
+			return;
+		modalUtils.clearInputs({
+			targetElem: domRefs.sessionModalInput,
+			hintElem: domRefs.modalHelp,
+			submitBtn: domRefs.modalSubmitBtn,
+		});
+	};
+
+	const addNewOptionTag = function (): void {
+		const inputValue: string | undefined = domRefs.sessionModalInput?.value;
+		const parentElem: HTMLSelectElement | null = domRefs.selectElem;
+
+		if (!parentElem || !inputValue) return;
+
+		if (sessionModel.addSession(inputValue)) {
 			addToSelectOption({
-				textContent,
+				textContent: inputValue,
 				parentElem,
 				typeOfElem: "option",
-				elemAttributes: {
-					value: inputValue,
-				},
+				elemAttributes: { value: inputValue },
 			});
+			clearModalInputs();
+			hideModal();
 		} else {
-			console.log("session already exist");
+			console.log("Session already exists");
 		}
-
-		clearModalInputs();
-		hideModal();
 	};
+
+	loadDefaults();
 
 	return {
 		displayModal,
 		updateModalUI,
 		watchModal,
-		closeModalBtn,
+		hideModal, // Consolidated hideModal and closeModalBtn
 		addNewOptionTag,
 	};
-})();
+};

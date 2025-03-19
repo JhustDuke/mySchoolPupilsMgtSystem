@@ -1,5 +1,8 @@
-import { sessionModalMethods } from "../view";
+import { sessionModalMethods as ssMethods } from "../view";
 import { domRefs } from "../view";
+
+const sessionModalMethods = ssMethods(domRefs);
+
 export const sessionModalEvents = (function () {
 	domRefs.selectElem!.addEventListener("click", sessionModalMethods.watchModal);
 
@@ -10,7 +13,7 @@ export const sessionModalEvents = (function () {
 
 	domRefs.closeModalBtn!.addEventListener(
 		"click",
-		sessionModalMethods.closeModalBtn
+		sessionModalMethods.hideModal
 	);
 	domRefs.modalSubmitBtn?.addEventListener(
 		"click",
