@@ -35,8 +35,10 @@ export const sessionModalMethods = function (
 			domRefs.selectElem.options[domRefs.selectElem.selectedIndex] || null;
 
 		if (!domRefs.sessionModal) return;
-		domRefs.sessionModal.style.display =
-			selectedOption?.value === "addSession" ? "block" : "none";
+
+		if (selectedOption?.value === "addSession") {
+			domRefs.sessionModal.style.display = "block";
+		}
 	};
 
 	const validateSessionName = function (): SessionValidationResult {

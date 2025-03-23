@@ -1,1 +1,1 @@
-export * from "./sessionModelFactory";
+export * from "./sessionModel";

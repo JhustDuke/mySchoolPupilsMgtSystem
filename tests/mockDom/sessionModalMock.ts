@@ -5,7 +5,7 @@ export const sessionModalMock = `
       <div>
         <select class="form-select text-center" id="select">
           <option selected disabled value="Choose session">Choose Session</option>
-          <option value="2023/2024">2023/2024</option>
+          <option value="2013/2014">2013/2014</option>
           <option value="2024/2025">2024/2025</option>
           <option value="addSession">Add Session</option>
         </select>
