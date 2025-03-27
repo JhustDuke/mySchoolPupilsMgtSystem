@@ -2,105 +2,157 @@ import {
 	isValidYearFormat,
 	addElemToDom as addToSelectOption,
 	domUtils as modalUtils,
+	insertBeforeAddSession,
 } from "../utils";
 import { domRefs as domElements } from ".";
 import { sessionModel as ssModel } from "../model";
 
-interface SessionValidationResult {
-	sessionName: string | undefined;
-	isValid: boolean;
-	isDuplicate: boolean;
-}
-
-/** The new options should be added before the addSession option so that it is inserted before */
-
-/**
- * Creates session modal methods with injected dependencies.
- */
 export const sessionModalMethods = function (
-	domRefs: typeof domElements,
+	domRefs = domElements,
 	sessionModel = ssModel()
 ) {
-	const loadDefaults = function (): void {
-		if (!domRefs.sessionModal || !domRefs.modalSubmitBtn || !domRefs.selectElem)
+	const loadDefaults = function () {
+		const modalDiv = domRefs.sessionModal;
+		const modalSubmitBtn = domRefs.modalSubmitBtn;
+		const modalSelectElem = domRefs.selectElem;
+		if (!modalDiv || !modalSelectElem || !modalSubmitBtn) return;
+		modalUtils.toggleVisibility({ targetElem: modalDiv, shouldShow: false });
+		modalSubmitBtn!.disabled = true;
+		if (!sessionModel.loadSessionYears()) {
+			addToSelectOption({
+				parentElem: modalSelectElem,
+				typeOfElem: "option",
+				textContent: "no sessions registered click addSession to register",
+				elemAttributes: {
+					disabled: true,
+				},
+				pluginFunc: insertBeforeAddSession,
+			});
 			return;
-		domRefs.sessionModal.style.display = "none";
-		domRefs.modalSubmitBtn.disabled = true;
-		sessionModel.loadSessions(domRefs.selectElem);
+		} else {
+			populateSelect();
+		}
+	};
+	const populateSelect = function () {
+		const selectElem = domRefs.selectElem;
+		if (!selectElem) {
+			console.log("selectElem not found");
+			return;
+		}
+
+		const data = sessionModel.loadSessionYears();
+		if (!data || data.length === 0) {
+			console.log("No session years available");
+			return;
+		}
+
+		data.forEach((sessionYear) => {
+			addToSelectOption({
+				parentElem: selectElem,
+				typeOfElem: "option",
+				textContent: sessionYear,
+				elemAttributes: { value: sessionYear },
+				pluginFunc: insertBeforeAddSession,
+			});
+		});
 	};
 
 	const displayModal = function (): void {
-		if (!domRefs.selectElem || domRefs.selectElem.selectedIndex < 0) return;
+		const modalSelectElem = domRefs.selectElem;
+		const modalDiv = domRefs.sessionModal;
+		if (!modalSelectElem || modalSelectElem.selectedIndex < 0) {
+			console.log("error");
+			return;
+		}
 		const selectedOption: HTMLOptionElement | null =
-			domRefs.selectElem.options[domRefs.selectElem.selectedIndex] || null;
+			modalSelectElem.options[modalSelectElem.selectedIndex] || null;
 
-		if (!domRefs.sessionModal) return;
+		if (!modalDiv) {
+			console.log("modal div not found");
+			return;
+		}
 
 		if (selectedOption?.value === "addSession") {
-			domRefs.sessionModal.style.display = "block";
+			modalUtils.toggleVisibility({ targetElem: modalDiv, shouldShow: true });
 		}
-	};
-
-	const validateSessionName = function (): SessionValidationResult {
-		const sessionName: string | undefined =
-			domRefs.sessionModalInput?.value.trim();
-		return {
-			sessionName,
-			isValid: sessionName ? isValidYearFormat(sessionName) : false,
-			isDuplicate: sessionName
-				? sessionModel.isDuplicateSession(sessionName)
-				: false,
-		};
-	};
-
-	const updateModalHint = function (
-		isValid: boolean,
-		isDuplicate: boolean
-	): boolean {
-		const modalHint: HTMLElement | null = domRefs.modalHelp;
-		if (!modalHint) return false;
-
-		modalHint.classList.add("red", "fw-bold", "fs-5");
-
-		if (isDuplicate) {
-			modalHint.textContent = "This session year already exists";
-			return false;
-		}
-
-		if (!isValid) return false;
-
-		modalHint.classList.remove("red", "fw-bold", "fs-5");
-		return true;
 	};
 
 	const updateModalUI = function (): void {
-		const { isValid, isDuplicate } = validateSessionName();
-		if (domRefs.modalSubmitBtn) {
-			domRefs.modalSubmitBtn.disabled = !updateModalHint(isValid, isDuplicate);
+		const modalSubmitBtn = domRefs.modalSubmitBtn;
+		const userInputs = domRefs.sessionModalInput?.value.trim();
+		const userInputIsValid = isValidYearFormat(userInputs as string);
+		const modalHelp = domRefs.modalHelp;
+		if (userInputIsValid) {
+			modalSubmitBtn!.disabled = false;
+			modalUtils.toggleVisibility({ targetElem: modalHelp });
+		} else {
+			modalSubmitBtn!.disabled = true;
+			modalUtils.inputHintHelper({
+				hintText: "input must be in the format YYYY/YYYY",
+				classListStyling: "+text-capitalize",
+				targetElem: modalHelp,
+			});
 		}
 	};
-
 	const watchModal = function (): void {
 		displayModal();
 		updateModalUI();
 	};
+	const addNewSession = function (): void {
+		const sessionValue: string | undefined = domRefs.sessionModalInput?.value;
+		const parentElem: HTMLSelectElement | null = domRefs.selectElem;
+		const modalHelp = domRefs.modalHelp;
 
+		if (!parentElem || !sessionValue) {
+			console.log("parentElem or sessionValue is null");
+			return;
+		}
+
+		if (sessionModel.isDuplicate(sessionValue)) {
+			console.log(`Session ${sessionValue} already exists!`);
+			modalUtils.inputHintHelper({
+				hintText: "This session year already exists",
+				targetElem: modalHelp,
+			});
+			return;
+		}
+
+		sessionModel.addNewSessionYear(sessionValue);
+		console.log(`Session year ${sessionValue} added successfully!`);
+
+		// Add session to the select dropdown
+		addToSelectOption({
+			textContent: sessionValue,
+			parentElem,
+			typeOfElem: "option",
+			elemAttributes: { value: sessionValue },
+			pluginFunc: insertBeforeAddSession,
+		});
+
+		clearModalInputs();
+		hideModal();
+	};
 	const hideModal = function (): void {
-		if (!domRefs.sessionModal) return;
+		const modalDiv = domRefs.sessionModal;
+		if (!modalDiv) {
+			console.log("modalDiv not found");
+			return;
+		}
 		modalUtils.toggleVisibility({
-			targetElem: domRefs.sessionModal,
+			targetElem: modalDiv,
 			shouldShow: false,
 		});
 		console.log("modal closed");
 	};
-
 	const clearModalInputs = function (): void {
-		if (
-			!domRefs.sessionModalInput ||
-			!domRefs.modalHelp ||
-			!domRefs.modalSubmitBtn
-		)
+		const userInputs = domRefs.sessionModalInput;
+		const helpText = domRefs.modalHelp;
+		const modalSubmitBtn = domRefs.modalSubmitBtn;
+		if (!userInputs || !helpText || !modalSubmitBtn) {
+			console.log("either userInputs,helpText, modalSubmitBtn mising");
 			return;
+		}
+
 		modalUtils.clearInputs({
 			targetElem: domRefs.sessionModalInput,
 			hintElem: domRefs.modalHelp,
@@ -108,40 +160,12 @@ export const sessionModalMethods = function (
 		});
 	};
 
-	const addNewOptionTag = function (): void {
-		const inputValue: string | undefined = domRefs.sessionModalInput?.value;
-		const parentElem: HTMLSelectElement | null = domRefs.selectElem;
-
-		if (!parentElem || !inputValue) return;
-
-		if (sessionModel.addSession(inputValue)) {
-			addToSelectOption({
-				textContent: inputValue,
-				parentElem,
-				typeOfElem: "option",
-				elemAttributes: { value: inputValue },
-				pluginFunc: function (parent: any, newElem: any) {
-					//insert elements before the addSession option
-					const addSessionOption = parent.querySelector("#addSession");
-					if (addSessionOption) {
-						parent.insertBefore(newElem, addSessionOption);
-					}
-				},
-			});
-			clearModalInputs();
-			hideModal();
-		} else {
-			console.log("Session already exists");
-		}
-	};
-
 	loadDefaults();
-
 	return {
+		hideModal,
 		displayModal,
 		updateModalUI,
 		watchModal,
-		hideModal, // Consolidated hideModal and closeModalBtn
-		addNewOptionTag,
+		addNewSession,
 	};
 };

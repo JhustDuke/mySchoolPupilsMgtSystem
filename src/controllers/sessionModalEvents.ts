@@ -4,19 +4,15 @@ import { domRefs } from "../view";
 const sessionModalMethods = ssMethods(domRefs);
 
 export const sessionModalEvents = (function () {
-	domRefs.selectElem!.addEventListener("click", sessionModalMethods.watchModal);
+	const modalSelectElem = domRefs.selectElem;
+	const userInputs = domRefs.sessionModalInput;
+	const modalSubmitBtn = domRefs.modalSubmitBtn;
+	const closeModalIcon = domRefs.closeModalBtn;
 
-	domRefs.sessionModalInput!.addEventListener(
-		"input",
-		sessionModalMethods.updateModalUI
-	);
+	modalSelectElem!.addEventListener("click", sessionModalMethods.watchModal);
 
-	domRefs.closeModalBtn!.addEventListener(
-		"click",
-		sessionModalMethods.hideModal
-	);
-	domRefs.modalSubmitBtn?.addEventListener(
-		"click",
-		sessionModalMethods.addNewOptionTag
-	);
+	userInputs!.addEventListener("input", sessionModalMethods.updateModalUI);
+
+	closeModalIcon!.addEventListener("click", sessionModalMethods.hideModal);
+	modalSubmitBtn?.addEventListener("click", sessionModalMethods.addNewSession);
 })();

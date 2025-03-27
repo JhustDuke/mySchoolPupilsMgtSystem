@@ -9,7 +9,12 @@ export function applyAttributes(
 	attributes: { [key: string]: any }
 ): void {
 	for (const [key, value] of Object.entries(attributes)) {
-		elem.setAttribute(key, value);
+		if (typeof value === "boolean") {
+			// Use property assignment for boolean attributes
+			(elem as any)[key] = value;
+		} else {
+			elem.setAttribute(key, value);
+		}
 	}
 }
 
