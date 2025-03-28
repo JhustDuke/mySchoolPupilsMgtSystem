@@ -1,4 +1,4 @@
-import { sessionModalEvents } from "./controllers/sessionModalEvents";
+import { sessionModalEvents } from "./controllers/sessionModalController";
 
 (function () {
 	document.addEventListener("DOMContentLoaded", function () {

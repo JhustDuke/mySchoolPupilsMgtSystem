@@ -17,9 +17,11 @@
 	</head>
 
 	<body>
-		<div id="app">
+		<div
+			id="app"
+			class="grey lighten-3">
 			<!-- select session dropdown -->
-			<center class="blue p-4">
+			<center class="blue p-4 mb-3">
 				<div>
 					<select
 						class="form-select text-center"
@@ -76,6 +78,51 @@
 						>add session</button
 					>
 				</div>
+			</div>
+
+			<!-- table for dynamic data display -->
+			<div
+				class="mx-auto p-4 table-responsive"
+				id="mainTable">
+				<div class="w-25 mb-3">
+					<!-- class select here -->
+					<select
+						class="form-select text-center"
+						id="classSelect">
+						<option
+							selected
+							disabled
+							value="Choose class"
+							id="chooseClass"
+							>Choose Class</option
+						>
+						<!-- dynamically generated sessions goes here -->
+						<option
+							value="addClass"
+							id="addClassBtn"
+							>Add Class</option
+						>
+					</select>
+				</div>
+				<table class="table table-hover table-bordered border-primary table-sm">
+					<thead>
+						<tr>
+							<th>S/N</th>
+							<th>FIRSTNAME</th>
+							<th>NAME</th>
+							<th>LASTNAME</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- s/n -->
+						<tr>
+							<th>1</th>
+							<td>surname</td>
+							<td>name</td>
+							<td>middlename</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 

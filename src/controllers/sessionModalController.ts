@@ -9,6 +9,9 @@ export const sessionModalEvents = (function () {
 	const modalSubmitBtn = domRefs.modalSubmitBtn;
 	const closeModalIcon = domRefs.closeModalBtn;
 
+	// load default behaviour
+	sessionModalMethods.loadDefaults();
+
 	modalSelectElem!.addEventListener("click", sessionModalMethods.watchModal);
 
 	userInputs!.addEventListener("input", sessionModalMethods.updateModalUI);

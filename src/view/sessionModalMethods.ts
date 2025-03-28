@@ -159,9 +159,17 @@ export const sessionModalMethods = function (
 			submitBtn: domRefs.modalSubmitBtn,
 		});
 	};
+	const displayTable = function () {
+		/**this will need the select elem
+		 * will listen for events on anything that does have the name choose session or addSession
+		 * displays a table
+		 *
+		 */
+	};
 
-	loadDefaults();
 	return {
+		loadDefaults,
+		populateSelect,
 		hideModal,
 		displayModal,
 		updateModalUI,
@@ -169,3 +177,9 @@ export const sessionModalMethods = function (
 		addNewSession,
 	};
 };
+/**
+ * when the option year is clicked
+ * it displays a table
+ * this table is gotten from the db
+ * a
+ */
