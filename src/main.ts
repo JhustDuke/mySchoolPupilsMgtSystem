@@ -1,7 +1,8 @@
-import { sessionModalEvents } from "./controllers/sessionModalController";
+import { sessionModalController, tableController } from "./controllers";
 
 (function () {
 	document.addEventListener("DOMContentLoaded", function () {
-		sessionModalEvents;
+		sessionModalController;
+		tableController;
 	});
 })();

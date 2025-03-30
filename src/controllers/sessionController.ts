@@ -1,19 +1,19 @@
-import { sessionModalMethods as ssMethods } from "../view";
+import { sessionModalMethods } from "../view";
 import { domRefs } from "../view";
 
-const sessionModalMethods = ssMethods(domRefs);
-
-export const sessionModalEvents = (function () {
+export const sessionModalController = (function () {
+	console.log("sscontroller ran");
 	const modalSelectElem = domRefs.selectElem;
 	const userInputs = domRefs.sessionModalInput;
 	const modalSubmitBtn = domRefs.modalSubmitBtn;
 	const closeModalIcon = domRefs.closeModalBtn;
 
-	// load default behaviour
-	sessionModalMethods.loadDefaults();
+	// load default state
+	sessionModalMethods.defaultStates(sessionModalMethods.populateSelect);
 
 	modalSelectElem!.addEventListener("click", sessionModalMethods.watchModal);
 
+	// modal input field
 	userInputs!.addEventListener("input", sessionModalMethods.updateModalUI);
 
 	closeModalIcon!.addEventListener("click", sessionModalMethods.hideModal);

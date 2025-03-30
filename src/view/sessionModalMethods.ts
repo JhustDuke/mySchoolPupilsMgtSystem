@@ -4,20 +4,24 @@ import {
 	domUtils as modalUtils,
 	insertBeforeAddSession,
 } from "../utils";
-import { domRefs as domElements } from ".";
+import { domRefs as domElements, domValues } from ".";
 import { sessionModel as ssModel } from "../model";
 
-export const sessionModalMethods = function (
+export const sessionModalMethods = (function (
 	domRefs = domElements,
-	sessionModel = ssModel()
+	sessionModel = ssModel
 ) {
-	const loadDefaults = function () {
+	const defaultStates = function (plugin?: () => void) {
 		const modalDiv = domRefs.sessionModal;
 		const modalSubmitBtn = domRefs.modalSubmitBtn;
 		const modalSelectElem = domRefs.selectElem;
+
 		if (!modalDiv || !modalSelectElem || !modalSubmitBtn) return;
+
+		//disabled elements
 		modalUtils.toggleVisibility({ targetElem: modalDiv, shouldShow: false });
 		modalSubmitBtn!.disabled = true;
+
 		if (!sessionModel.loadSessionYears()) {
 			addToSelectOption({
 				parentElem: modalSelectElem,
@@ -25,12 +29,13 @@ export const sessionModalMethods = function (
 				textContent: "no sessions registered click addSession to register",
 				elemAttributes: {
 					disabled: true,
+					id: "noSession",
 				},
 				pluginFunc: insertBeforeAddSession,
 			});
 			return;
 		} else {
-			populateSelect();
+			plugin?.();
 		}
 	};
 	const populateSelect = function () {
@@ -72,8 +77,15 @@ export const sessionModalMethods = function (
 			return;
 		}
 
-		if (selectedOption?.value === "addSession") {
+		//there are no stored session in the db
+		if (!sessionModel.loadSessionYears()) {
 			modalUtils.toggleVisibility({ targetElem: modalDiv, shouldShow: true });
+		}
+		//the user selected the addSession value
+		else if (selectedOption?.value === domValues.addSession) {
+			modalUtils.toggleVisibility({ targetElem: modalDiv, shouldShow: true });
+		} else {
+			console.log("cannot find", selectedOption);
 		}
 	};
 
@@ -82,18 +94,27 @@ export const sessionModalMethods = function (
 		const userInputs = domRefs.sessionModalInput?.value.trim();
 		const userInputIsValid = isValidYearFormat(userInputs as string);
 		const modalHelp = domRefs.modalHelp;
+
+		if (!modalHelp) return;
+
 		if (userInputIsValid) {
 			modalSubmitBtn!.disabled = false;
 			modalUtils.toggleVisibility({ targetElem: modalHelp });
 		} else {
 			modalSubmitBtn!.disabled = true;
-			modalUtils.inputHintHelper({
-				hintText: "input must be in the format YYYY/YYYY",
-				classListStyling: "+text-capitalize",
-				targetElem: modalHelp,
-			});
+
+			// Only update hintText if it's empty or different
+			const newHint = "input must be in the format YYYY/YYYY";
+			if (modalHelp.textContent?.trim() !== newHint) {
+				modalUtils.inputHintHelper({
+					hintText: newHint,
+					classListStyling: "+text-capitalize",
+					targetElem: modalHelp,
+				});
+			}
 		}
 	};
+
 	const watchModal = function (): void {
 		displayModal();
 		updateModalUI();
@@ -129,6 +150,7 @@ export const sessionModalMethods = function (
 			pluginFunc: insertBeforeAddSession,
 		});
 
+		removeNoSessionOption();
 		clearModalInputs();
 		hideModal();
 	};
@@ -159,16 +181,16 @@ export const sessionModalMethods = function (
 			submitBtn: domRefs.modalSubmitBtn,
 		});
 	};
-	const displayTable = function () {
-		/**this will need the select elem
-		 * will listen for events on anything that does have the name choose session or addSession
-		 * displays a table
-		 *
-		 */
+	const removeNoSessionOption = function () {
+		// Remove the default noSession option
+		const selectElem = domRefs.selectElem;
+		const noSessionOption = selectElem?.querySelector("#noSession");
+
+		noSessionOption ? noSessionOption.remove() : null;
 	};
 
 	return {
-		loadDefaults,
+		defaultStates,
 		populateSelect,
 		hideModal,
 		displayModal,
@@ -176,10 +198,4 @@ export const sessionModalMethods = function (
 		watchModal,
 		addNewSession,
 	};
-};
-/**
- * when the option year is clicked
- * it displays a table
- * this table is gotten from the db
- * a
- */
+})();

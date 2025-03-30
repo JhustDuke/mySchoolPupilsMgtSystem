@@ -1,6 +1,6 @@
 import { isValidYearFormat } from "../utils";
 
-export const sessionModel = function (
+export const sessionModel = (function (
 	databaseName: string = "amenDivineSessions"
 ) {
 	const safeGetStorage = function (key: string) {
@@ -77,7 +77,7 @@ export const sessionModel = function (
 
 	initSessions();
 	return { loadSessionYears, isDuplicate, addNewSessionYear };
-};
+})();
 
 // 	};
 
