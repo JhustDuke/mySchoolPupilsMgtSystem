@@ -2,7 +2,6 @@ import { sessionModalMethods } from "../view";
 import { domRefs } from "../view";
 
 export const sessionModalController = (function () {
-	console.log("sscontroller ran");
 	const modalSelectElem = domRefs.selectElem;
 	const userInputs = domRefs.sessionModalInput;
 	const modalSubmitBtn = domRefs.modalSubmitBtn;

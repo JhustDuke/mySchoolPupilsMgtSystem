@@ -2,7 +2,7 @@ import {
 	addElemToDom as addToSelectOption,
 	domUtils as modalUtils,
 } from "../utils";
-import { domRefs as domElements, domStrings } from ".";
+import { domRefs as domElements, domValues } from ".";
 import { sessionModel as ssModel } from "../model";
 
 export const tableMethods = (function (
@@ -23,8 +23,9 @@ export const tableMethods = (function (
 		 * displays a table
 		 *
 		 */
-		console.log("ran displayTable");
+
 		const selectElem = domRefs.selectElem;
+		const mainTable = domRefs.mainTable;
 		if (!selectElem) {
 			console.log("selectElem not found");
 			return;
@@ -37,13 +38,13 @@ export const tableMethods = (function (
 		}
 
 		if (
-			selectedOption.value === domStrings.chooseSession ||
-			selectedOption.value === domStrings.addSession
+			selectedOption.value === domValues.chooseSession ||
+			selectedOption.value === domValues.addSession
 		) {
-			domRefs.mainTable!.style.display = "block";
+			mainTable!.style.display = "block";
 			return;
 		} else {
-			domRefs.mainTable!.style.display = "block";
+			mainTable!.style.display = "block";
 		}
 	};
 	return {

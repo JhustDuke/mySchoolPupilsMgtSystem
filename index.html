@@ -9,7 +9,7 @@
 			rel="shortcut icon"
 			href="#"
 			type="image/x-icon" />
-		<!-- bs5,font_awesome and more inside css -->
+		<!-- Bootstrap 5, Font Awesome, and Custom CSS -->
 		<link
 			rel="stylesheet"
 			href="src/css/style.css" />
@@ -20,7 +20,7 @@
 		<div
 			id="app"
 			class="grey lighten-3">
-			<!-- select session dropdown -->
+			<!-- Session Selection Dropdown -->
 			<center class="blue p-4 mb-3">
 				<div>
 					<select
@@ -33,7 +33,7 @@
 							id="chooseSession"
 							>Choose Session</option
 						>
-						<!-- dynamically generated sessions goes here -->
+						<!-- Dynamically generated sessions will be inserted here -->
 						<option
 							value="addSession"
 							id="addSession"
@@ -44,48 +44,49 @@
 				</div>
 			</center>
 
-			<!--addSession modal -->
+			<!-- Add Session Modal -->
 			<div
 				class="center px-2 py-1 w-50 text-center mx-auto isRelative grey darken-3"
 				id="addSessionModal"
 				style="z-index: 4">
-				<!-- close modal btn -->
+				<!-- Close Modal Button -->
 				<span
 					class="red-text isAbsolute hover"
 					style="right: 8px; top: 0"
-					id="closeModalBtn"
-					><i
+					id="closeModalBtn">
+					<i
 						class="fa fa-window-close"
-						aria-hidden="true"></i
-				></span>
-				<!--  -->
+						aria-hidden="true"></i>
+				</span>
 
 				<div>
-					<p class="form-text white-text fw-medium text-capitalize"
-						>please register a session year <br />
-						<span id="modalHelp"> YYYY/YYYY </span></p
-					>
+					<!-- Modal Instruction -->
+					<p class="form-text white-text fw-medium text-capitalize">
+						Please register a session year <br />
+						<span id="modalHelp">YYYY/YYYY</span>
+					</p>
+					<!-- Input Field for Session Name -->
 					<input
 						type="text"
 						class="form-control my-0"
 						id="sessionModalInput" />
 					<br />
-					<!-- modal submit btn -->
+					<!-- Submit Button -->
 					<button
 						disabled
 						class="btn btn-primary w-100"
 						id="addSessionBtn"
-						>add session</button
+						>Add Session</button
 					>
 				</div>
 			</div>
 
-			<!-- table for dynamic data display -->
+			<!-- Table for Dynamic Data Display -->
 			<div
 				class="mx-auto p-4 table-responsive"
 				id="mainTable">
 				<div class="w-25 mb-3">
-					<!-- class select here -->
+					<!-- Class Selection Dropdown -->
 					<select
 						class="form-select text-center"
 						id="classSelect">
@@ -96,14 +97,63 @@
 							id="chooseClass"
 							>Choose Class</option
 						>
-						<!-- dynamically generated sessions goes here -->
-						<option
-							value="addClass"
-							id="addClassBtn"
-							>Add Class</option
-						>
+
+						<!-- Lower Primary Group -->
+						<optgroup label="Lower Primary">
+							<option
+								value="creche"
+								id="creche"
+								>Creche</option
+							>
+							<option
+								value="nurseryOne"
+								id="nurseryOne"
+								>Nursery One</option
+							>
+							<option
+								value="nurseryTwo"
+								id="nurseryTwo"
+								>Nursery Two</option
+							>
+							<option
+								value="nurseryThree"
+								id="nurseryThree"
+								>Nursery Three</option
+							>
+						</optgroup>
+
+						<!-- Primary Group -->
+						<optgroup label="Primary">
+							<option
+								value="grade1"
+								id="grade1"
+								>Grade 1</option
+							>
+							<option
+								value="grade2"
+								id="grade2"
+								>Grade 2</option
+							>
+							<option
+								value="grade3"
+								id="grade3"
+								>Grade 3</option
+							>
+							<option
+								value="grade4"
+								id="grade4"
+								>Grade 4</option
+							>
+							<option
+								value="grade5"
+								id="grade5"
+								>Grade 5</option
+							>
+						</optgroup>
 					</select>
 				</div>
+
+				<!-- Student Data Table -->
 				<table class="table table-hover table-bordered border-primary table-sm">
 					<thead>
 						<tr>
@@ -114,7 +164,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<!-- s/n -->
+						<!-- Example Row -->
 						<tr>
 							<th>1</th>
 							<td>surname</td>
@@ -124,8 +174,255 @@
 					</tbody>
 				</table>
 			</div>
+
+			<!-- Student Registration Form -->
+			<form
+				id="studentForm"
+				class="container bg-light p-4 rounded shadow-sm">
+				<div class="row">
+					<!-- Surname -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="surnameInput"
+							class="form-label"
+							>Surname</label
+						>
+						<input
+							type="text"
+							class="form-control"
+							id="surnameInput"
+							placeholder="Enter Surname" />
+					</div>
+
+					<!-- First Name -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="firstnameInput"
+							class="form-label"
+							>First Name</label
+						>
+						<input
+							type="text"
+							class="form-control"
+							id="firstnameInput"
+							placeholder="Enter First Name" />
+					</div>
+
+					<!-- Middle Name -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="middlenameInput"
+							class="form-label"
+							>Middle Name</label
+						>
+						<input
+							type="text"
+							class="form-control"
+							id="middlenameInput"
+							placeholder="Enter Middle Name" />
+					</div>
+				</div>
+
+				<div class="row">
+					<!-- Gender -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="genderSelect"
+							class="form-label"
+							>Gender</label
+						>
+						<select
+							class="form-select"
+							id="genderSelect">
+							<option
+								selected
+								disabled
+								>Choose Gender</option
+							>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+						</select>
+					</div>
+
+					<!-- Date of Birth (DOB) -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="dobInput"
+							class="form-label"
+							>Date of Birth</label
+						>
+						<input
+							type="date"
+							class="form-control"
+							id="dobInput" />
+					</div>
+
+					<!-- State -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="stateSelect"
+							class="form-label"
+							>State</label
+						>
+						<select
+							class="form-select"
+							id="stateSelect">
+							<option
+								selected
+								disabled
+								>Choose State</option
+							>
+							<!-- Populate with states dynamically -->
+						</select>
+					</div>
+				</div>
+
+				<div class="row">
+					<!-- Local Government Area -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="lgaSelect"
+							class="form-label"
+							>Local Government</label
+						>
+						<select
+							class="form-select"
+							id="lgaSelect">
+							<option
+								selected
+								disabled
+								>Choose LGA</option
+							>
+						</select>
+					</div>
+
+					<!-- Blood Group -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="bloodGroupSelect"
+							class="form-label"
+							>Blood Group</label
+						>
+						<select
+							class="form-select"
+							id="bloodGroupSelect">
+							<option
+								selected
+								disabled
+								>Select Blood Group</option
+							>
+							<option value="A+">A+</option>
+							<option value="A-">A-</option>
+							<option value="B+">B+</option>
+							<option value="B-">B-</option>
+							<option value="O+">O+</option>
+							<option value="O-">O-</option>
+							<option value="AB+">AB+</option>
+							<option value="AB-">AB-</option>
+						</select>
+					</div>
+
+					<!-- Religion -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="religionSelect"
+							class="form-label"
+							>Religion</label
+						>
+						<select
+							class="form-select"
+							id="religionSelect">
+							<option
+								selected
+								disabled
+								>Choose Religion</option
+							>
+							<option value="christian">Christian</option>
+							<option value="muslim">Muslim</option>
+						</select>
+					</div>
+				</div>
+
+				<!-- Address -->
+				<div class="row">
+					<div class="col-12 mb-3">
+						<label
+							for="addressInput"
+							class="form-label"
+							>Address</label
+						>
+						<textarea
+							class="form-control"
+							id="addressInput"
+							rows="2"
+							placeholder="Enter Address"></textarea>
+					</div>
+				</div>
+
+				<div class="row">
+					<!-- Father's Phone Number -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="fatherPhoneInput"
+							class="form-label"
+							>Father's Phone Number</label
+						>
+						<input
+							type="tel"
+							class="form-control border-bottom-only"
+							id="fatherPhoneInput"
+							placeholder="Enter Father's Number"
+							maxlength="11"
+							pattern="\d{11}" />
+					</div>
+
+					<!-- Mother's Phone Number -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="motherPhoneInput"
+							class="form-label"
+							>Mother's Phone Number</label
+						>
+						<input
+							type="tel"
+							class="form-control border-bottom-only"
+							id="motherPhoneInput"
+							placeholder="Enter Mother's Number"
+							maxlength="11"
+							pattern="\d{11}" />
+					</div>
+
+					<!-- Other Phone Number -->
+					<div class="col-md-4 mb-3">
+						<label
+							for="otherPhoneInput"
+							class="form-label"
+							>Other Phone Number</label
+						>
+						<input
+							type="tel"
+							class="form-control border-bottom-only"
+							id="otherPhoneInput"
+							placeholder="Enter Other Number"
+							maxlength="11"
+							pattern="\d{11}" />
+					</div>
+				</div>
+
+				<!-- Submit Button -->
+				<center>
+					<button
+						id="studentSubmitBtn"
+						style="width: 40% !important"
+						type="submit"
+						class="btn btn-primary"
+						>Submit</button
+					>
+				</center>
+			</form>
 		</div>
 
+		<!-- JavaScript Files -->
 		<script
 			type="module"
 			src="/src/main.ts"></script>
