@@ -4,7 +4,7 @@
 		"esModuleInterop": true,
 		"useDefineForClassFields": true,
 		"module": "ESNext",
-		"types": ["jest"],
+		"types": ["jest", "naija-state-local-government"],
 		"lib": ["ES2020", "DOM", "DOM.Iterable"],
 		"skipLibCheck": true,
 		"incremental": true,

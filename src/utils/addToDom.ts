@@ -29,7 +29,7 @@ export function addElemToDom({
 	typeOfElem: keyof HTMLElementTagNameMap;
 	textContent?: string;
 	elemAttributes?: { [key: string]: any };
-	pluginFunc?: (parent?: HTMLElement, newElem?: HTMLElement) => void;
+	pluginFunc?: (parentElem?: HTMLElement, newElem?: HTMLElement) => void;
 }): void {
 	if (!(parentElem instanceof HTMLElement)) {
 		console.log(`${parentElem} is not a valid HTML element`);
