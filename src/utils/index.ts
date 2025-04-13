@@ -2,4 +2,8 @@ export * from "./addToDom";
 export * from "./isValidYearFormat";
 export * from "./modalUtils";
 export * from "./insertBefore";
-export * from './removeFromDom'
+export * from "./removeFromDom";
+export * from "./showErrMsg";
+export * from "./validateNamefield";
+export * from "./validatePhonefield";
+export * from "./validateSelectfield";
