@@ -1,4 +1,5 @@
 import { formMethods } from "../view";
+import { populateStates, resetLgaSelect } from "../utils";
 import { domRefs } from "../view";
 
 export const formController = (function () {
@@ -16,17 +17,23 @@ export const formController = (function () {
 		religionSelect,
 		bloodGroupSelect,
 		studentForm,
+		addressInput,
 		formSubmitBtn,
 	} = domRefs;
 
-	formMethods.loadFormDefaultState();
+	formMethods.loadFormDefaultState(
+		populateStates(stateSelect as HTMLSelectElement)
+	);
 
 	lgaSelect?.addEventListener("focusin", formMethods.getLocalGovts);
 
-	//inputs
+	//name inputs
 	firstnameInput?.addEventListener("input", formMethods.validateFirstname);
 	middlenameInput?.addEventListener("input", formMethods.validateMiddlename);
 	surnameInput?.addEventListener("input", formMethods.validateSurname);
+
+	//address
+	addressInput?.addEventListener("input", formMethods.validateAddress);
 
 	//phonenumber
 	fatherPhoneInput?.addEventListener("input", formMethods.validateFatherPhone);
@@ -38,7 +45,11 @@ export const formController = (function () {
 	//selects
 	dobInput?.addEventListener("change", formMethods.validateDob);
 
-	stateSelect?.addEventListener("change", formMethods.validateNaijaState);
+	stateSelect?.addEventListener("change", function () {
+		formMethods.validateNaijaState(
+			resetLgaSelect(lgaSelect as HTMLSelectElement)
+		);
+	});
 
 	genderSelect?.addEventListener("change", formMethods.validateGender);
 
@@ -47,16 +58,11 @@ export const formController = (function () {
 	bloodGroupSelect?.addEventListener("change", formMethods.validateBloodGroup);
 
 	///button toggler
-	studentForm?.addEventListener("load", function () {
-		formMethods.checkFormValidity();
-		console.log(formMethods.elementStates);
-	});
+
 	studentForm?.addEventListener("input", function () {
 		formMethods.checkFormValidity();
-		console.log(formMethods.elementStates);
 	});
 	studentForm?.addEventListener("change", function () {
 		formMethods.checkFormValidity();
-		console.log(formMethods.elementStates);
 	});
 })();

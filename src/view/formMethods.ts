@@ -3,7 +3,9 @@ import {
 	showErrMsg,
 	validateNameField,
 	validatePhoneField,
-	validateSelectField, // make sure this is exported from ../utils
+	validateSelectField,
+	validateAddressField,
+	// make sure this is exported from ../utils
 } from "../utils";
 import { domRefs as domElements, domValues } from "./";
 import { naijaService } from "../services";
@@ -17,6 +19,7 @@ export const formMethods = (function (domRefs = domElements) {
 		dobInput: false,
 		religionSelect: false,
 		bloodGroupSelect: false,
+		addressInput: false,
 		fatherPhoneInput: false,
 		motherPhoneInput: false,
 		otherPhoneInput: false,
@@ -24,40 +27,9 @@ export const formMethods = (function (domRefs = domElements) {
 		statesSelect: false,
 	};
 
-	const formUtils = function () {
-		return {
-			addStatesToDom() {
-				const { stateSelect } = domRefs;
-				if (!stateSelect) return;
-				const states = naijaService.getStates();
-				states.forEach(function (state: string) {
-					addElemToDom({
-						parentElem: stateSelect,
-						typeOfElem: "option",
-						textContent: state,
-						elemAttributes: { value: state },
-					});
-				});
-			},
-
-			resetLga() {
-				const { lgaSelect } = domRefs;
-				if (!lgaSelect) return;
-
-				lgaSelect.innerHTML = "";
-				addElemToDom({
-					parentElem: lgaSelect,
-					typeOfElem: "option",
-					textContent: "Choose LGA",
-					elemAttributes: { value: "choose LGA", disabled: true },
-				});
-			},
-		};
-	};
-
-	const loadFormDefaultState = function () {
+	const loadFormDefaultState = function (loadNaijaStatesPlugin?: any) {
 		domRefs.formSubmitBtn!.disabled = true;
-		formUtils().addStatesToDom();
+		loadNaijaStatesPlugin?.();
 	};
 
 	const validateFirstname = function () {
@@ -162,7 +134,7 @@ export const formMethods = (function (domRefs = domElements) {
 		});
 	};
 
-	const validateNaijaState = function () {
+	const validateNaijaState = function (resetLgaSelectPlugin?: any) {
 		const { stateSelect } = domRefs;
 		if (!stateSelect) return;
 
@@ -179,7 +151,7 @@ export const formMethods = (function (domRefs = domElements) {
 			});
 			elementStates.statesSelect = false;
 		} else {
-			formUtils().resetLga();
+			resetLgaSelectPlugin?.();
 			elementStates.statesSelect = true;
 		}
 	};
@@ -219,6 +191,15 @@ export const formMethods = (function (domRefs = domElements) {
 		}
 	};
 
+	const validateAddress = function () {
+		const { addressInput } = domRefs;
+		validateAddressField({
+			inputElem: addressInput!,
+			fieldKey: "addressInput",
+			elementStates,
+		});
+	};
+
 	const checkFormValidity = function () {
 		const { formSubmitBtn } = domRefs;
 		const itContainsFalsy = Object.values(elementStates).includes(false);
@@ -229,25 +210,8 @@ export const formMethods = (function (domRefs = domElements) {
 		}
 	};
 
-	const globalValidator = function () {
-		validateFirstname();
-		validateMiddlename();
-		validateSurname();
-		validateDob();
-		validateGender();
-		validateBloodGroup();
-		validateReligion();
-		validateNaijaState();
-		validateFatherPhone();
-		validateMotherPhone();
-		validateOtherPhone();
-
-		checkFormValidity();
-	};
-
 	return {
 		loadFormDefaultState,
-		globalValidator,
 		validateFirstname,
 		validateMiddlename,
 		validateSurname,
@@ -256,6 +220,7 @@ export const formMethods = (function (domRefs = domElements) {
 		validateBloodGroup,
 		validateReligion,
 		validateNaijaState,
+		validateAddress,
 		validateFatherPhone,
 		validateMotherPhone,
 		validateOtherPhone,
