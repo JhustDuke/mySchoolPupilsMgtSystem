@@ -179,6 +179,58 @@
 			<form
 				id="studentForm"
 				class="container bg-light p-4 rounded shadow-sm">
+				<div class="row mb-3">
+					<!-- web cam div -->
+					<center>
+						<div
+							class="border rounded-3 border-4 isRelative text-center"
+							style="width: 16em; height: 10em">
+							<!-- canvas and video wrapper -->
+							<div
+								class="d-none"
+								id="canvasWrapper">
+								<canvas id="canvas"></canvas>
+								<video
+									id="video"
+									class="h-100 w-100 isAbsolute"
+									style="object-fit: cover; top: 0; left: 0"></video>
+							</div>
+							<span id="cameraHelp"
+								>please press the button below to start camera</span
+							>
+
+							<!-- generated image -->
+
+							<img
+								id="generatedImg"
+								class="d-none w-100 h-100 isAbsolute"
+								alt="webcam image"
+								style="object-fit: cover; top: 0; left: 0" />
+						</div>
+						<!-- web cam buttons -->
+						<div class="my-2">
+							<button
+								class="btn btn-primary"
+								id="stopCameraBtn"
+								type="button"
+								>stop</button
+							>
+
+							<button
+								class="btn btn-primary"
+								id="startCameraBtn"
+								type="button"
+								>start camera</button
+							>
+							<button
+								class="btn btn-primary"
+								id="snapCameraBtn"
+								type="button"
+								>snap</button
+							>
+						</div>
+					</center>
+				</div>
 				<div class="row">
 					<!-- Surname -->
 					<div class="col-md-4 mb-3">

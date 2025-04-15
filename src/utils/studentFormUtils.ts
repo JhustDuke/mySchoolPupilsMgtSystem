@@ -1,5 +1,5 @@
 // formUtils.ts
-import { addElemToDom } from "./";
+import { addElemToDom } from ".";
 import { naijaService } from "../services";
 
 export const populateStates = function (selectElem: HTMLSelectElement) {

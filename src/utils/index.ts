@@ -7,5 +7,5 @@ export * from "./showErrMsg";
 export * from "./validateNamefield";
 export * from "./validatePhonefield";
 export * from "./validateSelectfield";
-export * from "./formUtils";
+export * from "./studentFormUtils";
 export * from "./validateAddress";

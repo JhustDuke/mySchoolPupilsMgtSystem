@@ -5,7 +5,6 @@ import {
 	validatePhoneField,
 	validateSelectField,
 	validateAddressField,
-	// make sure this is exported from ../utils
 } from "../utils";
 import { domRefs as domElements, domValues } from "./";
 import { naijaService } from "../services";
@@ -27,9 +26,11 @@ export const formMethods = (function (domRefs = domElements) {
 		statesSelect: false,
 	};
 
-	const loadFormDefaultState = function (loadNaijaStatesPlugin?: any) {
+	const loadFormDefaultState = function (preLoadFunc?: any) {
 		domRefs.formSubmitBtn!.disabled = true;
-		loadNaijaStatesPlugin?.();
+		domRefs.stopCameraBtn!.disabled = true;
+		domRefs.snapCameraBtn!.disabled = true;
+		preLoadFunc?.();
 	};
 
 	const validateFirstname = function () {
@@ -200,6 +201,67 @@ export const formMethods = (function (domRefs = domElements) {
 		});
 	};
 
+	let stream: any = null;
+	const startCameranFunc = async function () {
+		const {
+			video,
+			startCameraBtn,
+			canvasWrapper,
+			cameraHelp,
+			stopCameraBtn,
+			snapCameraBtn,
+		} = domRefs;
+
+		try {
+			//if the stream is inactive start the webcam
+			if (!stream) {
+				stream = await navigator.mediaDevices.getUserMedia({ video: true });
+				video!.srcObject = stream;
+				video?.play();
+				canvasWrapper?.classList.remove("d-none");
+				cameraHelp?.classList.add("d-none");
+				startCameraBtn!.textContent = "retake?";
+				startCameraBtn!.disabled = true;
+				stopCameraBtn!.disabled = false;
+				snapCameraBtn!.disabled = false;
+				console.log("streaming");
+			}
+		} catch (err) {
+			console.log("there was an error:", err);
+		}
+	};
+	const snapPictureFunc = function (stopCameraPlugin: any) {
+		const { video, canvas, generatedImg } = domRefs;
+		if (stream) {
+			const ctx = canvas?.getContext("2d");
+			canvas!.width = video?.videoWidth as number;
+			canvas!.height = video?.videoHeight as number;
+			ctx?.drawImage(video!, 0, 0, canvas!.width, canvas!.height);
+			const convertToImageData = canvas?.toDataURL("image/png");
+			generatedImg?.classList.remove("d-none");
+			generatedImg!.src = convertToImageData as string;
+			canvas?.classList.add("d-none");
+			console.log("snapped picture");
+		}
+		stopCameraPlugin?.();
+	};
+
+	const stopCameraFunc = function () {
+		//if the stream is active
+		const { video, snapCameraBtn, stopCameraBtn, startCameraBtn } = domRefs;
+		if (stream) {
+			stream.getTracks().forEach(function (track: any) {
+				track.stop();
+			});
+			stream = null;
+			video?.pause();
+			stopCameraBtn!.disabled = true;
+			snapCameraBtn!.disabled = true;
+			startCameraBtn!.disabled = false;
+			console.log("stream stopped!");
+		}
+	};
+
 	const checkFormValidity = function () {
 		const { formSubmitBtn } = domRefs;
 		const itContainsFalsy = Object.values(elementStates).includes(false);
@@ -225,6 +287,9 @@ export const formMethods = (function (domRefs = domElements) {
 		validateMotherPhone,
 		validateOtherPhone,
 		getLocalGovts,
+		startCameranFunc,
+		stopCameraFunc,
+		snapPictureFunc,
 		elementStates,
 		checkFormValidity,
 	};

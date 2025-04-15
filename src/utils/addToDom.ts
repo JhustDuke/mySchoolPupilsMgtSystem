@@ -47,5 +47,4 @@ export function addElemToDom({
 	if (typeof pluginFunc === "function") {
 		pluginFunc(parentElem, createdElem);
 	}
-	console.log(`Element <${typeOfElem}> added to ${parentElem.tagName}`);
 }

@@ -18,12 +18,23 @@ export const formController = (function () {
 		bloodGroupSelect,
 		studentForm,
 		addressInput,
+		startCameraBtn,
+		stopCameraBtn,
+		snapCameraBtn,
 		formSubmitBtn,
 	} = domRefs;
 
 	formMethods.loadFormDefaultState(
 		populateStates(stateSelect as HTMLSelectElement)
 	);
+
+	//webCam
+
+	startCameraBtn?.addEventListener("click", formMethods.startCameranFunc);
+	stopCameraBtn?.addEventListener("click", formMethods.stopCameraFunc);
+	snapCameraBtn?.addEventListener("click", function () {
+		formMethods.snapPictureFunc(formMethods.stopCameraFunc);
+	});
 
 	lgaSelect?.addEventListener("focusin", formMethods.getLocalGovts);
 

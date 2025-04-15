@@ -1,4 +1,4 @@
-export  function showErrMsg(
+export function showErrMsg(
 	parentElem: HTMLElement | undefined,
 	newElem: HTMLElement | undefined
 ) {
@@ -6,6 +6,7 @@ export  function showErrMsg(
 
 	// Ensure the error message appears properly
 	parentElem.style.position = "relative";
+
 	newElem.style.position = "absolute";
 	newElem.style.top = "0";
 	newElem.style.left = "50%";
