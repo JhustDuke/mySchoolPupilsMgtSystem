@@ -8,7 +8,7 @@ export const sessionModalController = (function () {
 	const closeModalIcon = domRefs.closeModalBtn;
 
 	// load default state
-	sessionModalMethods.defaultStates(sessionModalMethods.populateSelect);
+	sessionModalMethods.DOMDefaultState();
 
 	modalSelectElem!.addEventListener("click", sessionModalMethods.watchModal);
 

@@ -24,23 +24,22 @@ export const formController = (function () {
 		formSubmitBtn,
 	} = domRefs;
 
-	formMethods.loadFormDefaultState(
-		populateStates(stateSelect as HTMLSelectElement)
-	);
-
+	formMethods.DOMDefaultState();
 	//webCam
 
 	startCameraBtn?.addEventListener("click", formMethods.startCameranFunc);
+
 	stopCameraBtn?.addEventListener("click", formMethods.stopCameraFunc);
-	snapCameraBtn?.addEventListener("click", function () {
-		formMethods.snapPictureFunc(formMethods.stopCameraFunc);
-	});
+
+	snapCameraBtn?.addEventListener("click", formMethods.saveWebCamImageFunc);
 
 	lgaSelect?.addEventListener("focusin", formMethods.getLocalGovts);
 
 	//name inputs
 	firstnameInput?.addEventListener("input", formMethods.validateFirstname);
+
 	middlenameInput?.addEventListener("input", formMethods.validateMiddlename);
+
 	surnameInput?.addEventListener("input", formMethods.validateSurname);
 
 	//address
@@ -57,9 +56,8 @@ export const formController = (function () {
 	dobInput?.addEventListener("change", formMethods.validateDob);
 
 	stateSelect?.addEventListener("change", function () {
-		formMethods.validateNaijaState(
-			resetLgaSelect(lgaSelect as HTMLSelectElement)
-		);
+		formMethods.validateNaijaState();
+		resetLgaSelect(lgaSelect as HTMLSelectElement);
 	});
 
 	genderSelect?.addEventListener("change", formMethods.validateGender);
@@ -70,10 +68,6 @@ export const formController = (function () {
 
 	///button toggler
 
-	studentForm?.addEventListener("input", function () {
-		formMethods.checkFormValidity();
-	});
-	studentForm?.addEventListener("change", function () {
-		formMethods.checkFormValidity();
-	});
+	studentForm?.addEventListener("input", formMethods.watchForm);
+	studentForm?.addEventListener("change", formMethods.watchForm);
 })();

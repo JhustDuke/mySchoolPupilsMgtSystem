@@ -11,7 +11,11 @@ export const sessionModalMethods = (function (
 	domRefs = domElements,
 	sessionModel = ssModel
 ) {
-	const defaultStates = function (plugin?: () => void) {
+	const DOMDefaultState = function () {
+		elementDefaultState();
+		populateSelect();
+	};
+	const elementDefaultState = function () {
 		const modalDiv = domRefs.sessionModal;
 		const modalSubmitBtn = domRefs.modalSubmitBtn;
 		const modalSelectElem = domRefs.selectElem;
@@ -34,8 +38,6 @@ export const sessionModalMethods = (function (
 				pluginFunc: insertBeforeAddSession,
 			});
 			return;
-		} else {
-			plugin?.();
 		}
 	};
 	const populateSelect = function () {
@@ -190,7 +192,7 @@ export const sessionModalMethods = (function (
 	};
 
 	return {
-		defaultStates,
+		DOMDefaultState,
 		populateSelect,
 		hideModal,
 		displayModal,

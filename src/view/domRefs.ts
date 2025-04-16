@@ -50,6 +50,8 @@ export const domRefs = {
 
 	otherPhoneInput: document.querySelector<HTMLInputElement>("#otherPhoneInput"),
 
+	errorFields: document.querySelector<HTMLDivElement>("#errorFields"),
+
 	formSubmitBtn: document.querySelector<HTMLButtonElement>("#studentSubmitBtn"),
 
 	//webCam and image

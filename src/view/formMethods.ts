@@ -5,7 +5,10 @@ import {
 	validatePhoneField,
 	validateSelectField,
 	validateAddressField,
+	populateStates,
+	resetLgaSelect,
 } from "../utils";
+
 import { domRefs as domElements, domValues } from "./";
 import { naijaService } from "../services";
 
@@ -24,13 +27,16 @@ export const formMethods = (function (domRefs = domElements) {
 		otherPhoneInput: false,
 		lgaSelect: false,
 		statesSelect: false,
+		webCam: false,
 	};
-
-	const loadFormDefaultState = function (preLoadFunc?: any) {
+	const elementDefaultState = function () {
 		domRefs.formSubmitBtn!.disabled = true;
 		domRefs.stopCameraBtn!.disabled = true;
 		domRefs.snapCameraBtn!.disabled = true;
-		preLoadFunc?.();
+	};
+	const DOMDefaultState = function () {
+		elementDefaultState();
+		populateStates(domRefs.stateSelect as HTMLSelectElement);
 	};
 
 	const validateFirstname = function () {
@@ -135,7 +141,7 @@ export const formMethods = (function (domRefs = domElements) {
 		});
 	};
 
-	const validateNaijaState = function (resetLgaSelectPlugin?: any) {
+	const validateNaijaState = function () {
 		const { stateSelect } = domRefs;
 		if (!stateSelect) return;
 
@@ -152,11 +158,9 @@ export const formMethods = (function (domRefs = domElements) {
 			});
 			elementStates.statesSelect = false;
 		} else {
-			resetLgaSelectPlugin?.();
 			elementStates.statesSelect = true;
 		}
 	};
-
 	const getLocalGovts = function () {
 		const { stateSelect, lgaSelect } = domRefs;
 		if (!stateSelect || !lgaSelect) return;
@@ -210,6 +214,7 @@ export const formMethods = (function (domRefs = domElements) {
 			cameraHelp,
 			stopCameraBtn,
 			snapCameraBtn,
+			generatedImg,
 		} = domRefs;
 
 		try {
@@ -221,6 +226,7 @@ export const formMethods = (function (domRefs = domElements) {
 				canvasWrapper?.classList.remove("d-none");
 				cameraHelp?.classList.add("d-none");
 				startCameraBtn!.textContent = "retake?";
+				generatedImg!.src = "";
 				startCameraBtn!.disabled = true;
 				stopCameraBtn!.disabled = false;
 				snapCameraBtn!.disabled = false;
@@ -230,7 +236,7 @@ export const formMethods = (function (domRefs = domElements) {
 			console.log("there was an error:", err);
 		}
 	};
-	const snapPictureFunc = function (stopCameraPlugin: any) {
+	const snapPictureFunc = function () {
 		const { video, canvas, generatedImg } = domRefs;
 		if (stream) {
 			const ctx = canvas?.getContext("2d");
@@ -242,8 +248,13 @@ export const formMethods = (function (domRefs = domElements) {
 			generatedImg!.src = convertToImageData as string;
 			canvas?.classList.add("d-none");
 			console.log("snapped picture");
+			//if no image has been snapped
+			if (generatedImg!.src === "") {
+				elementStates.webCam = false;
+			} else {
+				elementStates.webCam = true;
+			}
 		}
-		stopCameraPlugin?.();
 	};
 
 	const stopCameraFunc = function () {
@@ -261,6 +272,33 @@ export const formMethods = (function (domRefs = domElements) {
 			console.log("stream stopped!");
 		}
 	};
+	const saveWebCamImageFunc = function () {
+		snapPictureFunc();
+		stopCameraFunc();
+	};
+
+	const inputsWithError = function () {
+		const { errorFields } = domRefs;
+		const errorsInputs = new Set<string>();
+
+		let inputsObject = elementStates;
+		for (let key in inputsObject) {
+			let value = inputsObject[key as keyof typeof inputsObject];
+			if (value === false) {
+				errorsInputs.add(key);
+			}
+		}
+		if (errorsInputs.size > 0) {
+			errorFields?.classList.add("red-text");
+			errorFields?.classList.remove("d-none");
+			errorFields!.textContent = `please fill the following: ${[
+				...errorsInputs,
+			].join(", ")}`;
+		} else {
+			errorFields?.classList.add("d-none");
+			errorFields!.textContent = "";
+		}
+	};
 
 	const checkFormValidity = function () {
 		const { formSubmitBtn } = domRefs;
@@ -271,9 +309,12 @@ export const formMethods = (function (domRefs = domElements) {
 			formSubmitBtn!.disabled = true;
 		}
 	};
-
+	const watchForm = function () {
+		checkFormValidity();
+		inputsWithError();
+	};
 	return {
-		loadFormDefaultState,
+		DOMDefaultState,
 		validateFirstname,
 		validateMiddlename,
 		validateSurname,
@@ -289,8 +330,8 @@ export const formMethods = (function (domRefs = domElements) {
 		getLocalGovts,
 		startCameranFunc,
 		stopCameraFunc,
-		snapPictureFunc,
+		saveWebCamImageFunc,
 		elementStates,
-		checkFormValidity,
+		watchForm,
 	};
 })();
